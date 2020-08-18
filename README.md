@@ -1,3 +1,7 @@
+## React Clone using Firebase
+
+### Checklist:
+
 ```shell
 
 React
@@ -9,5 +13,14 @@ React Context API
 Google Authentication
 Deployed using Firebase!
 
+
+```
+
+### Dependencies
+
+```shell
+
+npm install @material-ui/core
+npm install @material-ui/icons
 
 ```
