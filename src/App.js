@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import "./App.css";
 import Sidebar from "./Sidebar";
 import Chat from "./Chat";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./Login";
-import { useStateValue } from "./StateProvider";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { useStateProviderValue } from "./StateProvider";
+import HomeScreen from "./HomeScreen";
 
 function App() {
-  const [{ user }, dispatch] = useStateValue();
-
+  const [{ user }, dispatch] = useStateProviderValue();
   return (
-    // BEM naming convention
     <div className="app">
       {!user ? (
         <Login />
@@ -23,7 +22,7 @@ function App() {
                 <Chat />
               </Route>
               <Route path="/">
-                <Chat />
+                <HomeScreen />
               </Route>
             </Switch>
           </Router>

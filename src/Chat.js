@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Avatar, IconButton } from "@material-ui/core";
+import { AttachFile, MoreVert, SearchOutlined } from "@material-ui/icons";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
-import { SearchOutlined, AttachFile, MoreVert } from "@material-ui/icons";
-import { useParams } from "react-router-dom";
 import "./Chat.css";
+import { useParams } from "react-router-dom";
 import db from "./firebase";
 import firebase from "firebase";
-import { useStateValue } from "./StateProvider";
+import { useStateProviderValue } from "./StateProvider";
 
 function Chat() {
-  const [input, setInput] = useState("");
   const [seed, setSeed] = useState("");
+  const [input, setInput] = useState("");
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }] = useStateProviderValue();
 
   useEffect(() => {
     if (roomId) {
@@ -37,18 +37,20 @@ function Chat() {
     setSeed(Math.floor(Math.random() * 5000));
   }, [roomId]);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    console.log("You type >>> ", input);
-
-    db.collection("rooms").doc(roomId).collection("messages").add({
-      message: input,
-      name: user.displayName,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-
+  const sendMessage = (event) => {
+    event.preventDefault();
+    console.log("You type >>>", input);
+    db.collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .add({
+            name: user.displayName,
+            message: input,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
     setInput("");
   };
+
   return (
     <div className="chat">
       <div className="chat__header">
@@ -56,31 +58,33 @@ function Chat() {
         <div className="chat__headerInfo">
           <h3>{roomName}</h3>
           <p>
-            last seen{" "}
-            {new Date(
-              messages[messages.length - 1]?.timestamp?.toDate()
-            ).toUTCString()}
+          last seen{" "}
+          {new Date(
+              messages[messages.length - 1]?.
+              timestamp?.toDate()
+          ).toUTCString()}
           </p>
         </div>
+
         <div className="chat__headerRight">
           <IconButton>
             <SearchOutlined />
           </IconButton>
+
           <IconButton>
             <AttachFile />
           </IconButton>
+
           <IconButton>
             <MoreVert />
           </IconButton>
         </div>
       </div>
+
       <div className="chat__body">
         {messages.map((message) => (
-          <p
-            className={`chat__message ${
-              message.name === user.displayName && "chat__reciever"
-            }`}
-          >
+          <p className={`chat__message ${message.name === user.displayName
+           && "chat__reciever"}`}>
             <span className="chat__name">{message.name}</span>
             {message.message}
             <span className="chat__timestamp">
@@ -91,7 +95,7 @@ function Chat() {
       </div>
       <div className="chat__footer">
         <InsertEmoticonIcon />
-        <form>
+        <form onSubmit={sendMessage}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}

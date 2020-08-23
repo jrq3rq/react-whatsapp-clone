@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import "./Sidebar.css";
+import React, { useState, useEffect } from "react";
 import { Avatar, IconButton } from "@material-ui/core";
 import DonutLargeIcon from "@material-ui/icons/DonutLarge";
 import ChatIcon from "@material-ui/icons/Chat";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { SearchOutlined } from "@material-ui/icons";
-import SidebarChat from "./SidebarChat";
+import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
+import SidebarChat from "./SidebarChat.js";
 import db from "./firebase";
-import { useStateValue } from "./StateProvider";
+import "./Sidebar.css";
+import { useStateProviderValue } from "./StateProvider";
 
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateProviderValue();
 
   useEffect(() => {
-    const unsubscribe = db.collection("rooms").onSnapshot((onSnapshot) =>
+    const unsubscribe = db.collection("rooms").onSnapshot((snapshot) =>
       setRooms(
-        onSnapshot.docs.map((doc) => ({
+        snapshot.docs.map((doc) => ({
           id: doc.id,
           data: doc.data(),
         }))
       )
     );
+
     return () => {
       unsubscribe();
     };
@@ -35,9 +36,11 @@ function Sidebar() {
           <IconButton>
             <DonutLargeIcon />
           </IconButton>
+
           <IconButton>
             <ChatIcon />
           </IconButton>
+
           <IconButton>
             <MoreVertIcon />
           </IconButton>
@@ -45,11 +48,11 @@ function Sidebar() {
       </div>
       <div className="sidebar__search">
         <div className="sidebar__searchContainer">
-          <SearchOutlined />
-          <input placeholder="Search or start new" type="text" />
+          <SearchOutlinedIcon />
+          <input placeholder="Search or start new chat" type="text" />
         </div>
       </div>
-      <div className="sidebar_chats">
+      <div className="sidebar__chats">
         <SidebarChat addNewChat />
         {rooms.map((room) => (
           <SidebarChat key={room.id} id={room.id} name={room.data.name} />

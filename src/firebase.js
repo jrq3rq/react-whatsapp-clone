@@ -1,3 +1,4 @@
+// npm i firebase
 import firebase from "firebase";
 
 const firebaseConfig = {
@@ -11,6 +12,7 @@ const firebaseConfig = {
   measurementId: "G-B2SP7LXMEX",
 };
 
+// ----------------------------------------------------------
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
@@ -18,3 +20,4 @@ const provider = new firebase.auth.GoogleAuthProvider();
 
 export { auth, provider };
 export default db;
+// ----------------------------------------------------------
